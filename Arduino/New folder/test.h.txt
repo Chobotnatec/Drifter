@@ -1,0 +1,17 @@
+//pokus
+#include "iostream.h"
+
+
+int ahoj(void)
+{
+	cout<<"ahoj"<<endl;
+	return 1;
+}
+
+
+
+void secondFunction()
+{}
+int branchFunction()
+{
+}
