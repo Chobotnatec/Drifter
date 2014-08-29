@@ -18,7 +18,7 @@ using namespace cv;
 namespace drift{
 
   CarTracker::CarTracker( int camId,
-			  std::string const& filename,
+			  std::string const& videoFileName,
 			  Camera const& cam,
 			  MarkerType const& groundMarker,
 			  MatrixDD   const& markerDistances,

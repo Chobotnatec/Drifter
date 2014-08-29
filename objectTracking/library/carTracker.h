@@ -38,7 +38,7 @@ namespace drift{
      * \see %Camera
      */
     CarTracker( int camId,
-		std::string const& filename,
+		std::string const& videoFileName,
 		Camera const& cam,
 		MarkerType const& groundMarker,
 		MatrixDD   const& markerDistances,

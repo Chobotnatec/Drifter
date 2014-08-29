@@ -3,7 +3,7 @@ add_library( objectTracking objectTracking.cpp carTracker.cpp )
 
 add_subdirectory( ROITracker )
 
-target_link_libraries( objectTracking libnlopt )
+target_link_libraries( objectTracking nlopt )
 target_link_libraries( objectTracking ${OpenCV_LIBS} )
 target_link_libraries( objectTracking ROITracker )
 
