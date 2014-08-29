@@ -1,27 +1,27 @@
 cmake_minimum_required (VERSION 2.6)
 project (ObjectTrackingLibrary)
  
-
-set( DRIFTER_DATA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../data CACHE STRING "Location of data folders e.g. markers, data etc..")
+# install directory for objectTracking library
 set( DRIFTER_INSTALL_DIR  "${CMAKE_CURRENT_SOURCE_DIR}/.."  CACHE STRING "Instal location!.")
 
-include_directories("C:/SFML-2.1/include" 	${Boost_INCLUDE_DIRS}
-	C:/nlopt-2.4.2 
-	C:/eigen3.21
-	)
-link_directories(C:/nlopt-2.4.2)
-add_definitions( -DDRIFTER_DATA_DIR="${DRIFTER_DATA_DIR}" )
-
-# Find openCV
-set(OpenCV_DIR C:/OpenCV/build)
+# find external libraries
+find_package( Boost 1.3.6 REQUIRED )
 find_package( OpenCV REQUIRED )
+find_package( Eigen3 REQUIRED )
 
-# marker files
-file( GLOB MARKER_FILES markers/*.txt )
+# set up NLOPT
+message( "ADD CROSS-PLATFORM INITIALIZATION OF NLOPT" )
+
+# add include directories
+include_directories( ${EIGEN3_INCLUDE_DIR} )
+
+# make sure that c++11 is enabled in unix machine
+if(UNIX)
+  list( APPEND CMAKE_CXX_FLAGS "-std=c++11")
+endif(UNIX) 
+
 
 # Create library `objectTracking`
 add_subdirectory( library )
 
-add_subdirectory( tests )
-
-add_subdirectory( carTracking )
+add_subdirectory( examples )
