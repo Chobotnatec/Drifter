@@ -13,7 +13,7 @@
 #include "objectTracking.h"
 #include "ROITracker/ROITracker.h"
 
-namespace drift{
+namespace tracking{
 
   /*
    *   CarTracker class

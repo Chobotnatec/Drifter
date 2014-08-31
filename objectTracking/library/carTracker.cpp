@@ -15,7 +15,7 @@
 using namespace std;
 using namespace cv;
 
-namespace drift{
+namespace tracking{
 
   CarTracker::CarTracker( int camId,
 			  std::string const& videoFileName,
@@ -84,7 +84,7 @@ namespace drift{
 
 	cap >> img;
 
-	drift::trackMarker(img, groundMarker, markers);
+	tracking::trackMarker(img, groundMarker, markers);
 
 	if( markers.size() == markerNum ){
 	  N++;
@@ -221,7 +221,7 @@ namespace drift{
 
     region = roiTracker[markerId].getROI( img );
 
-    drift::trackMarker(region, carMarker[markerId], markers);
+    tracking::trackMarker(region, carMarker[markerId], markers);
 
     if( markers.size()==1 ){
 

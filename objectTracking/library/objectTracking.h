@@ -14,7 +14,7 @@
 #include <chrono>
 #include <iostream>
 
-namespace drift{
+namespace tracking{
 
   typedef double Real;
   typedef Eigen::Matrix<Real,3,3> Matrix33;

@@ -19,7 +19,7 @@
 using namespace std;
 using namespace cv;
 
-namespace drift{
+namespace tracking{
 
   bool preprocessImage( cv::Mat const & inImage, cv::Mat & outImage, cv::Scalar minHSV, cv::Scalar maxHSV, int erodeAmount, int dilateAmount ){
 

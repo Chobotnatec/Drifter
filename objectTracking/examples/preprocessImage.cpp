@@ -5,6 +5,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include "../library/objectTracking.h"
+#include "../library/configParser.h"
 #include <iosfwd>
 
 #include <chrono>
@@ -13,11 +14,22 @@
 using namespace std;
 using namespace cv;
 using namespace Eigen;
-using namespace drift;
+using namespace tracking;
 
 const int camID = 0;
 
-int main() {
+int main(int argc, char *argv[]){
+
+  ConfigParser parser;
+
+  auto stat = parser.parse( argc, argv );
+
+  if( stat != ConfigParser::SUCCESS ){
+    return 0;
+  }
+
+  cout << "Configuration file is: " << parser.vm["configFile"].as<string>() << endl;
+  cout << "Data folder is: " << parser.vm["dataFolder"].as<string>() << endl;
 
   int MIN_H(0), MAX_H(255), MIN_S(0), MAX_S(255), MIN_V(0), MAX_V(255),
     erodeAmount(0), dilateAmount(0);
@@ -50,7 +62,7 @@ int main() {
     cap >> src;
 
     Timer preprocessTimer;
-    drift::preprocessImage(src, src_processed,
+    tracking::preprocessImage(src, src_processed,
 			   cv::Scalar(MIN_H, MIN_S, MIN_V),
 			   cv::Scalar(MAX_H, MAX_S, MAX_V), erodeAmount, dilateAmount);
     timer.stop( "Only preprocess took: " );
