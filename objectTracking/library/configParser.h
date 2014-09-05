@@ -2,6 +2,7 @@
 #define _CONFIGPARSER_H_
 
 #include <string>
+#include <exception>
 
 #include <boost/program_options.hpp>
 
@@ -16,13 +17,14 @@ namespace tracking{
    */
   class ConfigParser{
   public:
-    /**
-     * @brief Return types of parse function.
-     */
-    enum Status{
-      SUCCESS, /*< When all necessary arguments were parsed. */
-      EXIT, /*< When you should exit program after argument parsing. For example when help message is shown. */
-      ERROR /*< Something bad happened and you should exit. */
+    class Exception : public std::exception{
+    public:
+      Exception( std::string _msg ) : msg(_msg){}
+      const char* what() const throw(){
+	return msg.c_str();
+      }
+    private:
+      std::string msg;
     };
 
     ConfigParser();
@@ -34,9 +36,10 @@ namespace tracking{
     /**
      * @brief Parse program arguments.
      * For predefined arguments see %parseMain %parseConfigFile
-     * @return EXIT - when program should be terminated, for example when help message has been shown. ERROR - when something bad happend. Otherwise return SUCCESS.
+     * @return True - everything went ok. False - you should stop the program, something bad happend or help message was shown.
+     * @throw %Exception
      */
-    Status parse( int argc, char *argv[] );
+    bool parse( int argc, char *argv[] );
 
     /**
      * @brief Parse only main arguments.
@@ -44,25 +47,64 @@ namespace tracking{
      * There are two predefined main arguments.
      * 'help' - prints help message
      * 'configFile' - location of object tracking configuration file
-     * @return EXIT - when help message has been shown. ERROR - when configuration file has not been specified(There is no chcecking if the file name is valid). Otherwise return SUCCESS.
+     * @return True - everything went ok. False - you should stop the program, something bad happend or help message was shown.
+     * @throw %Exception
      * @todo Consider validity check of the configuration file
      */
-    Status parseMain( int argc, char *argv[] );
+    bool parseMain( int argc, char *argv[] );
 
     /**
      * @brief Parse configuration file.
      * Parse configuration file and checks that 'dataFolder' is parsed.
      * 'dataFolder' - location of object tracking configuration file
-     * @return ERROR - when 'dataFolder' is not specified (There is no validity check of the folder). Otherwise return SUCCESS.
-     */
-    Status parseConfigFile( std::string configFileName );
+     * @return True - everything went ok. False - you should stop the program, something bad happend.
+     * @throw %Exception
+     * @todo add new arguments to this documentation
+     */ 
+    bool parseConfigFile( std::string configFileName );
+
+    template<typename T>
+    T get(std::string const & argName){
+      try{
+	return vm[argName].as<T>();
+      }catch( boost::bad_any_cast const & exc ){
+	throw Exception( "Failed while getting \'" + argName + "\' argument." );
+      }
+    }
+
+    template<typename T>
+    T get(std::string const & argName, int i){
+      try{
+	return vm[argName].as<std::vector<T> >()[i];
+      }catch( boost::bad_any_cast const & exc ){
+	throw Exception( "Failed while getting " + std::to_string(i) + "th \'" + argName + "\' argument" );
+      }
+    }
+
+    template<typename T>
+    int count(std::string const & argName){
+      if( vm.count(argName) ){
+	try{
+	  return vm[argName].as<std::vector<T> >().size();
+	}catch( boost::bad_any_cast const & exc ){
+	  return 1;
+	}
+      }else{
+	return 0;
+      }
+    }
+
+
+
+    int count(std::string const & argName){
+      return vm.count(argName);
+    }
 
     /**
      * @brief Prints description of arguments.
      */
     void printHelp();
 
-    
   public:
     boost::program_options::options_description configFileDesc;
     boost::program_options::options_description mainDesc;
@@ -71,3 +113,4 @@ namespace tracking{
 }
 
 #endif /* _CONFIGPARSER_H_ */
+  

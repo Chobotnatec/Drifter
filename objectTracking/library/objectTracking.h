@@ -9,7 +9,7 @@
 #define OBJECTTRACKING_H_
 
 #include <string>
-#include <Eigen/Dense>
+#include <eigen3/Eigen/Dense>
 #include <opencv2/core/core.hpp>
 #include <chrono>
 #include <iostream>
@@ -99,7 +99,7 @@ namespace tracking{
     int resWidth,resHeight;
   };
 
-  /*  
+  /** 
    * Creates distance matrix from distance file.
    * Distance file has to contain distances between markers. We denote distance between marker i and marker j by (ij). 
    *

@@ -6,7 +6,7 @@ set( TRACKING_INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../install"  CACHE STRING
 set( TRACKING_DATA_DIR "${TRACKING_INSTALL_DIR}/data/trackingDataFolder" CACHE STRING "Object tracking directory." )
 
 # create configuration file
-file(WRITE ${TRACKING_DATA_DIR}/tracking.cfg "dataFolder = ${TRACKING_DATA_DIR}/tracking.cfg")
+file(WRITE ${TRACKING_DATA_DIR}/tracking.cfg "dataFolder = ${TRACKING_DATA_DIR}")
 
 # find external libraries
 
@@ -16,11 +16,12 @@ find_package( Eigen3 REQUIRED )
 
 # set up NLOPT
 message( "ADD CROSS-PLATFORM INITIALIZATION OF NLOPT" )
+message( "DEFINE SOME VARIABLE WHICH HOLDS LIBS TO LINK" )
 
 # add include directories
 include_directories( ${EIGEN3_INCLUDE_DIR} )
 
-# make sure that c++11 is enabled in unix machine
+# make sure that c++11 is enabled on unix machine
 if(UNIX)
   list( APPEND CMAKE_CXX_FLAGS "-std=c++11")
 endif(UNIX) 
@@ -32,3 +33,5 @@ install( FILES ${TRACKING_DATA_DIR}/tracking.cfg DESTINATION ${TRACKING_INSTALL_
 add_subdirectory( library )
 
 add_subdirectory( examples )
+
+add_subdirectory( setUpPrograms )

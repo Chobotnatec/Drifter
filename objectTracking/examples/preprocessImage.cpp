@@ -22,11 +22,8 @@ int main(int argc, char *argv[]){
 
   ConfigParser parser;
 
-  auto stat = parser.parse( argc, argv );
-
-  if( stat != ConfigParser::SUCCESS ){
+  if(!parser.parse( argc, argv ))
     return 0;
-  }
 
   cout << "Configuration file is: " << parser.vm["configFile"].as<string>() << endl;
   cout << "Data folder is: " << parser.vm["dataFolder"].as<string>() << endl;
