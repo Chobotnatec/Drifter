@@ -3,10 +3,11 @@ project (ObjectTrackingLibrary)
 
 # install directory for objectTracking library
 set( TRACKING_INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../install"  CACHE STRING "Instal location.")
-set( TRACKING_DATA_DIR "${TRACKING_INSTALL_DIR}/data/trackingDataFolder" CACHE STRING "Object tracking directory." )
+set( TRACKING_DATA_DIR "${TRACKING_INSTALL_DIR}/data/trackingDataFolder" )
+#set( TRACKING_DATA_DIR "${TRACKING_INSTALL_DIR}/data/trackingDataFolder" CACHE STRING "Object tracking directory." )
 
 # create configuration file
-file(WRITE ${TRACKING_DATA_DIR}/tracking.cfg "dataFolder = ${TRACKING_DATA_DIR}")
+file(WRITE "${TRACKING_INSTALL_DIR}/bin/tracking.cfg" "dataFolder = ${TRACKING_DATA_DIR}")
 
 # find external libraries
 
@@ -26,12 +27,11 @@ if(UNIX)
   list( APPEND CMAKE_CXX_FLAGS "-std=c++11")
 endif(UNIX) 
 
-# copy configuration file to bin/ folder
-install( FILES ${TRACKING_DATA_DIR}/tracking.cfg DESTINATION ${TRACKING_INSTALL_DIR}/bin )
-
 # Create library `objectTracking`
 add_subdirectory( library )
 
 add_subdirectory( examples )
 
 add_subdirectory( setUpPrograms )
+
+add_subdirectory( cameraCalibration )

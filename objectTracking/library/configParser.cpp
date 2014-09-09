@@ -7,16 +7,18 @@ namespace po=boost::program_options;
 
 namespace tracking{
 
-  string configFileHelp =
-    "\nObjectTracking configuration file help";
+  // I had to define CONFIG_FILE_HELP with #define. When I define it as const string than I get wierd segmentation fault when I instantiate ConfigParser in global scope. No idea why :(
+  #define CONFIG_FILE_HELP "\nObjectTracking configuration file help"
+
 
   ConfigParser::ConfigParser():mainDesc(""),
-			       configFileDesc(configFileHelp){
+			       configFileDesc(CONFIG_FILE_HELP){
     init();
   }
   
-  ConfigParser::ConfigParser( std::string helpMsg ):mainDesc(helpMsg),
-						    configFileDesc(configFileHelp){
+
+  ConfigParser::ConfigParser( std::string const & helpMsg ) :mainDesc(helpMsg),
+							     configFileDesc(CONFIG_FILE_HELP){
     init();
   }
 

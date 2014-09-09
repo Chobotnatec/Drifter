@@ -19,8 +19,8 @@ namespace tracking{
   public:
     class Exception : public std::exception{
     public:
-      Exception( std::string _msg ) : msg(_msg){}
-      const char* what() const throw(){
+      Exception( std::string const & _msg ) : msg(_msg){}
+       const char* what() const throw(){
 	return msg.c_str();
       }
     private:
@@ -28,7 +28,7 @@ namespace tracking{
     };
 
     ConfigParser();
-    ConfigParser( std::string helpMsg );
+    ConfigParser( std::string const & helpMsg );
   private:
     void init();
   public:
@@ -109,6 +109,7 @@ namespace tracking{
     boost::program_options::options_description configFileDesc;
     boost::program_options::options_description mainDesc;
     boost::program_options::variables_map vm; /*< Variable map used to access parsed arguments. */
+    static const std::string configFileHelp;
   };
 }
 

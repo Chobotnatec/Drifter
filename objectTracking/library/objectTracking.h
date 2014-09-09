@@ -66,7 +66,13 @@ namespace tracking{
      */
     Camera(	Matrix33 A,
 		Matrix33 R,
-		Vector3 T );
+		Vector3 T);
+
+    Camera(	Matrix33 A,
+		Matrix33 R,
+		Vector3 T,
+		int resW,
+		int resH);
 
 
     cv::Point2d projectPoint( Vector3 point ) const;
@@ -91,6 +97,10 @@ namespace tracking{
     int getResWidth() const;
 
     int getResHeight() const;
+
+    void setR( const Matrix33 & _R );
+    
+    void setT( const Vector3 & _T );
 
   private:
     Matrix33 A;
@@ -124,11 +134,9 @@ namespace tracking{
   /*
    * Load camera from file.
    * 
-   * Camera file contains intristic parameters(3x3 matrix) of camera, extrinsic parameters has to be given as parameters.
+   * Camera file contains resolution of image, intristic parameters(3x3 matrix) of camera, distorsion coefficients(not currently used).
    * 
    * \param cameraFile Location of camera file
-   * \param R Rotation matrix, from world space to camera space.
-   * \param T Position of camera in world space.
    * \return Returns instance of Camera with given parameters.
    * \throw std::runtime_error If file could not be opened.
    */

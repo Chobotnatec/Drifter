@@ -349,8 +349,15 @@ namespace tracking{
 		 Eigen::Matrix<Real,3,1> T ) : A(A),R(R),T(T){
     resWidth = A(0,2)*2 + 1;
     resHeight = A(1,2)*2 + 1;
-//#warning Camera class should be reviewed, because I added resolution parameter to it. It should get new constructor with explicitely specifying resolution.
   }
+
+  Camera::Camera(Eigen::Matrix<Real,3,3> A,
+		 Eigen::Matrix<Real,3,3> R,
+		 Eigen::Matrix<Real,3,1> T,
+		 int resW,
+		 int resH) : A(A),R(R),T(T),resWidth(resW),resHeight(resH){
+  }
+
 
   cv::Point2d Camera::projectPoint( Eigen::Matrix<Real,3,1> point ) const{
 
@@ -404,6 +411,13 @@ namespace tracking{
     return resHeight;
   }
 
+  void Camera::setR(const Matrix33 &_R){
+    R = _R;
+  }
+
+  void Camera::setT(const Vector3 &_T){
+    T = _T;
+  }
 
   MatrixDD loadDistanceMatrix( std::string distanceFile ){
 
@@ -447,7 +461,7 @@ namespace tracking{
   }
 
 
-  Camera loadCameraFromFile( std::string cameraFile, Matrix33 R, Vector3 T ){
+  Camera loadCameraFromFile( std::string cameraFile ){
     ifstream file(cameraFile);
 
     if(!file.is_open()){
@@ -455,6 +469,10 @@ namespace tracking{
     }
 
     Matrix33 A;
+    int resW,resH;
+
+    file >> resW;
+    file >> resH;
 
     for(int i=0;i<3;i++){
       for(int j=0;j<3;j++){
@@ -462,7 +480,7 @@ namespace tracking{
       }
     }
 
-    return Camera(A,R,T);
+    return Camera(A,Matrix33::Identity(),Vector3::Zero(),resW,resH);
   }
 
   Timer::Timer(){
