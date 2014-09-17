@@ -9,7 +9,7 @@
 #define OBJECTTRACKING_H_
 
 #include <string>
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 #include <opencv2/core/core.hpp>
 #include <chrono>
 #include <iostream>
@@ -140,7 +140,7 @@ namespace tracking{
    * \return Returns instance of Camera with given parameters.
    * \throw std::runtime_error If file could not be opened.
    */
-  Camera loadCameraFromFile( std::string cameraFile, Matrix33 R = Matrix33::Identity(), Vector3 T = Vector3::Zero() );
+  Camera loadCameraFromFile( std::string cameraFile );
 
   //! Preprocess Image for locating color markers in it.
   /* ADD DESCRIPTION
@@ -211,12 +211,20 @@ namespace tracking{
    * \param points input points in picture space
    * \param cam camera
    * \param outPoints world coordinates of points
+   * \param x Marker distances from camera. Only rough guess.
    * \return residuum
    */
   Real findPointPositions( MatrixDD const & d,
 			   std::vector<cv::Point2d> const & points,
 			   Camera const & cam,
-			   std::vector<Vector3> & outPoints );
+			   std::vector<Vector3> & outPoints,
+			   std::vector<Real> & x);
+
+  Real findPointPositions( MatrixDD const & d,
+			   std::vector<cv::Point2d> const & points,
+			   Camera const & cam,
+			   std::vector<Vector3> & outPoints);
+
 
   /* This function finds plane defined by input points(planePoints) and defines plane's local coordinate frame.
    * When you project position of camera onto this plane you get origin of plane's coordinate frame.

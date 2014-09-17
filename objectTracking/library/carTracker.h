@@ -96,6 +96,29 @@ namespace tracking{
     bool trackCar( Vector3 & frontMarkerPos,
 		   Vector3 & backMarkerPos );
 
+    /*
+     * Finds actual position of front marker.
+     *
+     * \param frontMarkerPos Position of front marker center in plane space.
+     * \param frontMarkerScreenPos Position of front marker in screen space.
+     * \param timeStart Car was at given position between times 'timeStart' and 'timeEnd'.
+     * \param timeEnd Car was at given position between times 'timeStart' and 'timeEnd'.
+     */
+
+    bool trackFrontMarker( Vector3 & frontMarkerPos,
+			   cv::Point2d & frontMarkerScreenPos,
+			   std::chrono::time_point<std::chrono::system_clock> & timeStart,
+			   std::chrono::time_point<std::chrono::system_clock> & timeEnd );
+
+    bool trackFrontMarker( Vector3 & frontMarkerPos,
+			   cv::Point2d & frontMarkerScreenPos );
+    
+    bool trackFrontMarker( Vector3 & frontMarkerPos,
+			   std::chrono::time_point<std::chrono::system_clock> & timeStart,
+			   std::chrono::time_point<std::chrono::system_clock> & timeEnd );
+
+    bool trackFrontMarker( Vector3 & frontMarkerPos );
+
 
   private:
     bool trackMarker( cv::Mat const& img,

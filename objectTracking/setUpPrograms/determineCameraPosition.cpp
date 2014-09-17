@@ -35,7 +35,9 @@ public:
   DetermineCameraPositionParser( string helpMsg ) : ConfigParser(helpMsg){
 
     mainDesc.add_options()
-      ("markerName,m",po::value<string>()->default_value("groundMarker"),"Name of the ground marker e.g. \"orangeMarker blueMarker\" ");
+      ("markerName,m",po::value<string>()->default_value("groundMarker"),"Name of the ground marker e.g. \"orangeMarker\" ")
+      ("cameraName",po::value<string>()->default_value("default_camera"),"Name of the camera")
+      ;
   }
 };
 
@@ -62,11 +64,12 @@ int main(int arg, char* argc[]) {
   
     Mat src;
 
-#error ADD CAMERA INITIALIZATION
+    string cameraFileName = dataFolder + "/camera/" + parser.get<string>("cameraName") + ".txt";
+    Camera cam = loadCameraFromFile( cameraFileName );
 
     VideoCapture cap(camID);
-    cap.set(CV_CAP_PROP_FRAME_WIDTH,camW);
-    cap.set(CV_CAP_PROP_FRAME_HEIGHT,camH);
+    cap.set(CV_CAP_PROP_FRAME_WIDTH,cam.getResWidth());
+    cap.set(CV_CAP_PROP_FRAME_HEIGHT,cam.getResHeight());
 
     if (!cap.isOpened())
       return false;
@@ -76,8 +79,6 @@ int main(int arg, char* argc[]) {
   
     while (1) {
       cap >> src;
-
-      //flip(src,src,1);
 
       // Track markers
       trackMarker(src, markerType, markers);
@@ -97,16 +98,22 @@ int main(int arg, char* argc[]) {
       if (markers.size() == distances.rows() ) {
 
 	vector<Vector3> outPoints;
-
-	cout << "Error: " <<  findPointPositions(distances, markers, cam, outPoints) << endl;
+	double optiError;
+	
+	vector<Real> x(distances.rows(),2000);
+	optiError = findPointPositions(distances, markers, cam, outPoints, x);
 
 	findPlaneCoordinateFrame( cam, outPoints, planeR, planeT );
 
-	cout << endl;
-	cout << planeR << endl;
-	cout << planeT << endl;
-	cout << -planeR.transpose()*planeT << endl;
-	cout << endl;
+	cout << "Camera is: " << (planeR.transpose()*(cam.getT() - planeT))[2] << "mm above ground." << endl;
+	cout << "Marker distances are: ";
+	for(Real y : x){
+	  cout << y << " ";
+	}
+	cout << endl << endl;
+
+      }else{
+	cout << "Detected " << markers.size() << " ground markers but there should be " << distances.rows() << " markers in the picture!" << endl;
       }
 
       imshow("determineCameraPosition", src);

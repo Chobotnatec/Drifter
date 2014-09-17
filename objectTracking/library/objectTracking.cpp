@@ -168,7 +168,7 @@ namespace tracking{
     for(size_t i=0;i<x.size();++i){
       for(size_t j=0;j<i;++j){
 	Vector3 v = x[i]*dir[i] - x[j]*dir[j];
-	result += abs( (double)d(i,j) - v.norm() );
+	result += pow(abs((double)d(i,j) - v.norm()),2);
       }
     }
     return result;
@@ -177,11 +177,21 @@ namespace tracking{
   Real findPointPositions( MatrixDD const & d,
 			   std::vector<cv::Point2d> const & points,
 			   Camera const & cam,
-			   std::vector<Vector3> & outPoints ){
+			   std::vector<Vector3> & outPoints){
+    vector<Real> x(points.size(),2000);
+    return findPointPositions( d, points, cam, outPoints, x );
+  }
+
+
+  Real findPointPositions( MatrixDD const & d,
+			   std::vector<cv::Point2d> const & points,
+			   Camera const & cam,
+			   std::vector<Vector3> & outPoints,
+			   std::vector<Real> & x){
 
 
     nlopt::opt solver(nlopt::LN_SBPLX,points.size());
-
+    
     solver.set_lower_bounds(0);
     solver.set_upper_bounds(DBL_MAX);
 
@@ -191,15 +201,17 @@ namespace tracking{
     data.dir.resize(points.size());
     Vector3 camPos = cam.getCameraPosition();
 
-
     for(size_t i=0;i<points.size();++i){
       data.dir[i] = cam.getDirection(points[i]);
     }
 
-    vector<double> x(points.size(),2000);
     double fmin;
 
     solver.set_min_objective(objectiveFunctionV2,(void*)&data);
+
+    if(x.size()!=points.size()){
+      x.resize(points.size());
+    }
 
     try{
       solver.optimize(x,fmin);
@@ -211,7 +223,8 @@ namespace tracking{
     for(size_t i=0;i<points.size();++i){
       outPoints[i] = x[i]*data.dir[i] + camPos;
     }
-  
+    cout << endl;
+
     return fmin;
   }
 

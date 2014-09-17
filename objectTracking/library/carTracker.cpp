@@ -155,13 +155,14 @@ namespace tracking{
 			     std::chrono::time_point<std::chrono::system_clock> & timeEnd){
 
     cv::Mat img;
+    bool stat = true;
 
     timeStart = std::chrono::system_clock::now();
     if(cap.read(img)){
       timeEnd = std::chrono::system_clock::now();
 
-      trackMarker( img, 0, frontMarkerPos, frontMarkerScreenPos );
-      trackMarker( img, 1, backMarkerPos, backMarkerScreenPos );
+      stat &= trackMarker( img, 0, frontMarkerPos, frontMarkerScreenPos );
+      stat &= trackMarker( img, 1, backMarkerPos, backMarkerScreenPos );
 
       {
 	circle(img, frontMarkerScreenPos, 1, Scalar(255, 0, 0), 2);
@@ -182,7 +183,7 @@ namespace tracking{
       return false;
     }
 	  
-    return true;
+    return stat;
   }
 
   bool CarTracker::trackCar( Vector3 & frontMarkerPos,
@@ -210,12 +211,60 @@ namespace tracking{
     std::chrono::time_point<std::chrono::system_clock> time;
     return trackCar( frontMarkerPos, frontMarkerScreenPos, backMarkerPos, backMarkerScreenPos, time, time );
   }
-    
+
+  bool CarTracker::trackFrontMarker( Vector3 & frontMarkerPos,
+			 cv::Point2d & frontMarkerScreenPos,
+			 std::chrono::time_point<std::chrono::system_clock> & timeStart,
+			 std::chrono::time_point<std::chrono::system_clock> & timeEnd ){
+    cv::Mat img;
+    bool stat = true;
+
+    timeStart = std::chrono::system_clock::now();
+    if(cap.read(img)){
+      timeEnd = std::chrono::system_clock::now();
+
+      stat &= trackMarker( img, 0, frontMarkerPos, frontMarkerScreenPos );
+
+      {
+	circle(img, frontMarkerScreenPos, 1, Scalar(255, 0, 0), 2);
+	stringstream ss;
+	ss << 0;
+	putText(img, ss.str(), frontMarkerScreenPos, FONT_HERSHEY_PLAIN, 1.5, Scalar(255, 0, 0));
+      }
+
+      imshow("car tracking", img);
+    }else{
+      cout << "Could not get next video frame!" << endl;
+      return false;
+    }
+	  
+    return stat;
+  }
+ 
+
+  bool CarTracker::trackFrontMarker( Vector3 & frontMarkerPos,
+			 cv::Point2d & frontMarkerScreenPos ){
+    std::chrono::time_point<std::chrono::system_clock> timeStart,timeEnd;
+    return trackFrontMarker( frontMarkerPos, frontMarkerScreenPos, timeStart, timeEnd );
+  }
+	
+  bool CarTracker::trackFrontMarker( Vector3 & frontMarkerPos,
+			 std::chrono::time_point<std::chrono::system_clock> & timeStart,
+			 std::chrono::time_point<std::chrono::system_clock> & timeEnd ){
+    Point2d screenPoint;
+    return trackFrontMarker( frontMarkerPos, screenPoint, timeStart, timeEnd );
+  }
+
+  bool CarTracker::trackFrontMarker( Vector3 & frontMarkerPos ){
+    Point2d screenPoint;
+    std::chrono::time_point<std::chrono::system_clock> timeStart,timeEnd;
+    return trackFrontMarker( frontMarkerPos, screenPoint, timeStart, timeEnd );
+  }
 
   bool CarTracker::trackMarker( cv::Mat const& img,
-		    int markerId, // 0 - front marker, 1 - back marker
-		    Vector3 & markerPos,
-		    cv::Point2d & markerScreenPos ){
+				int markerId, // 0 - front marker, 1 - back marker
+				Vector3 & markerPos,
+				cv::Point2d & markerScreenPos ){
     cv::Mat region;
     vector<Point2d> markers;
 

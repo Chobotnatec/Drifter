@@ -17,11 +17,18 @@ target_link_libraries( showGroundMarkers ${OpenCV_LIBS} )
 target_link_libraries( showGroundMarkers objectTracking )
 target_link_libraries( showGroundMarkers ${Boost_LIBRARIES} )
 
-#add_executable( determineCameraPosition determineCameraPosition.cpp )
+add_executable( determineCameraPosition determineCameraPosition.cpp )
 
-#target_link_libraries( determineCameraPosition ${OpenCV_LIBS} )
-#target_link_libraries( determineCameraPosition objectTracking )
-#target_link_libraries( determineCameraPosition ${Boost_LIBRARIES} )
+target_link_libraries( determineCameraPosition ${OpenCV_LIBS} )
+target_link_libraries( determineCameraPosition objectTracking )
+target_link_libraries( determineCameraPosition ${Boost_LIBRARIES} )
 
-install ( TARGETS setUpMarker checkMarkers showGroundMarkers  DESTINATION ${TRACKING_INSTALL_DIR}/bin )
+add_executable( trackPoint trackPoint.cpp )
+
+target_link_libraries( trackPoint ${OpenCV_LIBS} )
+target_link_libraries( trackPoint objectTracking )
+target_link_libraries( trackPoint ${Boost_LIBRARIES} )
+
+
+install ( TARGETS setUpMarker checkMarkers showGroundMarkers determineCameraPosition trackPoint  DESTINATION ${TRACKING_INSTALL_DIR}/bin )
 

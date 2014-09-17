@@ -7,7 +7,7 @@ set( TRACKING_DATA_DIR "${TRACKING_INSTALL_DIR}/data/trackingDataFolder" )
 #set( TRACKING_DATA_DIR "${TRACKING_INSTALL_DIR}/data/trackingDataFolder" CACHE STRING "Object tracking directory." )
 
 # create configuration file
-file(WRITE "${TRACKING_INSTALL_DIR}/bin/tracking.cfg" "dataFolder = ${TRACKING_DATA_DIR}")
+file(WRITE "${TRACKING_INSTALL_DIR}/bin/tracking.cfg" "dataFolder = ${TRACKING_DATA_DIR}\ncamID=1\ncamWidth=1280\ncamHeight=720")
 
 # find external libraries
 
@@ -29,8 +29,6 @@ endif(UNIX)
 
 # Create library `objectTracking`
 add_subdirectory( library )
-
-add_subdirectory( examples )
 
 add_subdirectory( setUpPrograms )
 
